@@ -1,7 +1,13 @@
+import { LandingPage } from "./pages";
+
 function App() {
+  const handleConnect = () => {
+    console.log("Connect button clicked!");
+  };
+
   return (
     <>
-      <h1>Hello World!</h1>
+      <LandingPage onConnect={handleConnect} />
     </>
   );
 }
