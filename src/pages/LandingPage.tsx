@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,7 +10,13 @@ interface LandingPageProps {
   onConnect: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onConnect }) => {
+const LandingPage: React.FC<LandingPageProps> = () => {
+  const navigate = useNavigate();
+  const handleConnect = () => {
+    console.log("Navigating to connect page");
+    navigate("/connect");
+  };
+
   return (
     <div className="min-h-screen spotify-gradient text-white">
       <div className="container mx-auto px-4 py-12">
@@ -53,7 +60,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onConnect }) => {
 
           {/* CTA */}
           <Button
-            onClick={onConnect}
+            onClick={handleConnect}
             size="lg"
             className="bg-spotify-green hover:bg-spotify-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105"
           >
