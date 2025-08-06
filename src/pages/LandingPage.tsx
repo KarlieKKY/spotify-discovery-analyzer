@@ -18,7 +18,7 @@ const LandingPage: React.FC<LandingPageProps> = () => {
   };
 
   return (
-    <div className="min-h-screen spotify-gradient text-white">
+    <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="text-center max-w-4xl mx-auto">
           {/* Header */}
@@ -33,7 +33,7 @@ const LandingPage: React.FC<LandingPageProps> = () => {
           </h2>
 
           {/* Preview Section */}
-          <Card className="bg-black/50 backdrop-blur-sm border border-spotify-green/20 p-8 mb-8">
+          <Card className="spotify-gradient backdrop-blur-sm border border-spotify-green/20 p-8 mb-8">
             <h3 className="text-xl mb-6 text-spotify-green">Preview Results</h3>
 
             {/* Stats Preview */}

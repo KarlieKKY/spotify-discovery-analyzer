@@ -1,58 +1,84 @@
-// src/pages/CallbackPage.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Music, Loader } from "lucide-react";
-import { useSpotifyAuth } from "@/hooks/useSpotifyAuth";
-import { SpotifyService } from "@/services/spotify";
 
 const CallbackPage: React.FC = () => {
   const navigate = useNavigate();
-  const { handleCallback, isLoading, error } = useSpotifyAuth();
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
+    if (hasProcessed.current) {
+      return;
+    }
+    hasProcessed.current = true;
+
     const processCallback = async () => {
-      const code = SpotifyService.extractCodeFromUrl(window.location.href);
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorParam = urlParams.get("error");
+        const code = urlParams.get("code");
 
-      if (code) {
-        try {
-          await handleCallback(code);
+        if (errorParam) {
+          console.error("Spotify auth error:", errorParam);
+          navigate("/connect");
+          return;
+        }
 
-          // Redirect to localhost version for better UX
-          if (window.location.hostname === "127.0.0.1") {
-            window.location.href = "http://localhost:5173/loading";
-          } else {
-            navigate("/loading");
-          }
-        } catch (err) {
-          console.error("Callback processing failed:", err);
-          // Redirect back to connect page on error
+        if (!code) {
+          console.error("No authorization code found");
+          navigate("/connect");
+          return;
+        }
+
+        const existingToken = localStorage.getItem("spotify_access_token");
+        if (existingToken) {
+          navigate("/loading");
+          return;
+        }
+
+        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+        const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+        const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
+
+        const response = await fetch("https://accounts.spotify.com/api/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: redirectUri,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Token exchange failed:", errorText);
+          navigate("/connect");
+          return;
+        }
+
+        const tokenData = await response.json();
+
+        localStorage.setItem("spotify_access_token", tokenData.access_token);
+
+        const savedToken = localStorage.getItem("spotify_access_token");
+        if (savedToken) {
+          navigate("/loading");
+        } else {
+          console.error("Failed to save token");
           navigate("/connect");
         }
-      } else {
-        console.error("No authorization code found");
+      } catch (error: any) {
+        console.error("Callback processing error:", error);
         navigate("/connect");
       }
     };
 
-    processCallback();
-  }, [handleCallback, navigate]);
-
-  if (error) {
-    return (
-      <div className="min-h-screen spotify-gradient text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 text-xl mb-4">Authentication Error</div>
-          <div className="text-gray-300 mb-4">{error}</div>
-          <button
-            onClick={() => navigate("/connect")}
-            className="bg-spotify-green hover:bg-spotify-green/90 text-white px-6 py-2 rounded-lg"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+    setTimeout(processCallback, 500);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen spotify-gradient text-white flex items-center justify-center">

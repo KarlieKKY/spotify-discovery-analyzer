@@ -1,71 +1,57 @@
-# React + TypeScript + Vite
+# Spotify Personal Analytics Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This React app analyzes your Spotify data to reveal your musical fingerprint using statistical analysis and data visualization.
 
-Currently, two official plugins are available:
+## 🚀 Quick Start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Clone this repo and install dependencies:**
+   ```
+   git clone https://github.com/KarlieKKY/spotify-discovery-analyzer.git
+   cd spotify-discovery-analyzer
+   npm install
+   ```
+2. **Configure your Spotify App:**
 
-## Expanding the ESLint configuration
+- Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+- Click **"Create an App"** (or select an existing one).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3. **Run the app:**
+   ```
+   npm run dev -- --host 0.0.0.0
+   ```
 
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+## ✨ Key Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **Genre Diversity Score:** Quantifies how varied your music taste is using Shannon entropy.
+- **Artist Loyalty vs. Discovery:** See if you mostly stick to favorite artists or explore new ones.
+- **Discovery Timeline:** Visualize how your music exploration and habits have evolved over time.
+- **Musical Evolution:** Compare your recent and long-term listening patterns to discover your taste journey.
+- **Lightning-Fast:** Analyzes 150+ tracks in under 3 seconds with smart parallel processing and caching.
+- **Interactive Visualizations:** Modern bar, pie, and trend charts built with Recharts.
+- **Secure & Private:** OAuth login with no data stored or shared—everything stays on your machine.
+- **Fully Responsive:** Works seamlessly on mobile, tablet, and desktop.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 💪 Challenges Overcome
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+- **Spotify API Limitations:**  
+  Original idea relied on Discover Weekly, but Spotify blocks API access to this playlist. I pivoted to analyzing your entire listening history across multiple timeframes for more personal and valuable insights.
+- **OAuth Complexity:**  
+  Handling Spotify’s authentication flow (tokens, redirects, scope errors) was non-trivial. Built a robust custom auth service and clear error recovery.
+- **Data Analysis at Scale:**  
+  Transformed large, raw API data into meaningful stats using statistical methods (like Shannon entropy) and optimized performance for <3s insights.
+- **Smooth UX:**  
+  Built error states and a demo mode for reliability—app remains useful even if API fails or the user isn’t logged in.
 
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+---
 
-npm run dev -- --host 0.0.0.0
+## 🛣️ Future Roadmap
+
+- [ ] **Automated Tests:** Unit tests for analysis/statistical functions.
+- [ ] **Accessibility:** WCAG 2.1 AA compliance and improved keyboard navigation.
+- [ ] **Performance Monitoring:** Bundle analysis and optimizations.
+- [ ] **Historical Tracking:** Monthly “snapshots” of taste evolution.
+- [ ] **Social Comparison:** See how your Music DNA stacks up against friends.
+- [ ] **AI Recommendations:** Personalized music suggestions based on unique patterns.
+- [ ] **Data Export:** Download insights as PDF or CSV.

@@ -17,7 +17,7 @@ const ConnectPage: React.FC = () => {
 
   const handleSpotifyConnect = () => {
     console.log("Starting Spotify authentication...");
-    login(); // This will redirect to Spotify's auth page
+    login();
   };
 
   return (
@@ -40,7 +40,8 @@ const ConnectPage: React.FC = () => {
         {error && (
           <div className="max-w-md mx-auto mb-6">
             <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-center">
-              <p className="text-red-200">{error}</p>
+              <p className="text-red-200 text-sm mb-2">Authentication Error:</p>
+              <p className="text-red-100 font-mono text-xs">{error}</p>
             </div>
           </div>
         )}

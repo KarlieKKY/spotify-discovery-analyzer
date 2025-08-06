@@ -1,4 +1,3 @@
-// src/services/spotify.ts
 import axios, { type AxiosInstance } from "axios";
 
 export interface SpotifyUser {
@@ -28,7 +27,6 @@ export class SpotifyService {
       },
     });
 
-    // Add request interceptor to include auth token
     this.api.interceptors.request.use((config) => {
       if (this.accessToken) {
         config.headers.Authorization = `Bearer ${this.accessToken}`;
@@ -36,11 +34,9 @@ export class SpotifyService {
       return config;
     });
 
-    // Check for existing token on initialization
     this.loadTokenFromStorage();
   }
 
-  // Generate Spotify authorization URL
   getAuthUrl(): string {
     const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
     const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
@@ -51,6 +47,7 @@ export class SpotifyService {
       "user-read-recently-played",
       "user-read-private",
       "user-read-email",
+      "user-library-read",
     ].join(" ");
 
     const params = new URLSearchParams({
@@ -64,7 +61,6 @@ export class SpotifyService {
     return `https://accounts.spotify.com/authorize?${params.toString()}`;
   }
 
-  // Exchange authorization code for access token
   async exchangeCodeForToken(code: string): Promise<SpotifyAuthResponse> {
     const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
     const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
@@ -90,18 +86,15 @@ export class SpotifyService {
     return authData;
   }
 
-  // Set access token
   setAccessToken(token: string): void {
     this.accessToken = token;
     localStorage.setItem("spotify_access_token", token);
   }
 
-  // Get current access token
   getAccessToken(): string | null {
     return this.accessToken;
   }
 
-  // Load token from localStorage
   private loadTokenFromStorage(): void {
     const token = localStorage.getItem("spotify_access_token");
     if (token) {
@@ -109,30 +102,25 @@ export class SpotifyService {
     }
   }
 
-  // Clear token and logout
   logout(): void {
     this.accessToken = null;
     localStorage.removeItem("spotify_access_token");
   }
 
-  // Check if user is authenticated
   isAuthenticated(): boolean {
     return !!this.accessToken;
   }
 
-  // Get current user profile
   async getCurrentUser(): Promise<SpotifyUser> {
     const response = await this.api.get("/me");
     return response.data;
   }
 
-  // Get user's playlists
   async getUserPlaylists() {
     const response = await this.api.get("/me/playlists?limit=50");
     return response.data;
   }
 
-  // Find Discover Weekly playlist
   async findDiscoverWeekly() {
     const playlists = await this.getUserPlaylists();
     return playlists.items.find(
@@ -142,7 +130,6 @@ export class SpotifyService {
     );
   }
 
-  // Generate random string for state parameter
   private generateRandomString(length: number): string {
     const possible =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -153,12 +140,10 @@ export class SpotifyService {
     return text;
   }
 
-  // Extract authorization code from URL - STATIC METHOD
   static extractCodeFromUrl(url: string): string | null {
     const urlParams = new URLSearchParams(url.split("?")[1]);
     return urlParams.get("code");
   }
 }
 
-// Export both the class and a singleton instance
 export const spotifyService = new SpotifyService();

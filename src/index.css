@@ -203,23 +203,19 @@ button:focus-visible {
 
 @layer utilities {
   .spotify-gradient {
-    background: linear-gradient(
-      135deg,
-      rgb(var(--spotify-green)) 0%,
-      rgb(var(--spotify-black)) 50%,
-      rgb(var(--spotify-green)) 100%
-    );
+    background: #191414 !important;
+    color: #fff;
   }
 
   .text-spotify-green {
-    color: rgb(var(--spotify-green));
+    color: #1db954 !important;
   }
 
   .bg-spotify-green {
-    background-color: rgb(var(--spotify-green));
+    background-color: #1db954 !important;
   }
 
   .border-spotify-green {
-    border-color: rgb(var(--spotify-green));
+    border-color: #1db954 !important;
   }
 }
